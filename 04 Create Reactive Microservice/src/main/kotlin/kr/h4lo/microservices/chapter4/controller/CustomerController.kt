@@ -14,11 +14,14 @@ class CustomerController {
     private lateinit var customerService: CustomerService
 
     @RequestMapping(path = ["/customer/{id}"], method = [RequestMethod.GET])
-    fun getCustomer(@PathVariable id: Int): ResponseEntity<Mono<Customer>> {
-        return ResponseEntity(customerService.getCustomer(id), HttpStatus.OK)
-    }
+    fun getCustomer(@PathVariable id: Int): ResponseEntity<Mono<Customer>> =
+            ResponseEntity(customerService.getCustomer(id), HttpStatus.OK)
 
     @RequestMapping(path = ["/customers"])
     fun getCustomers(@RequestParam(required = false, defaultValue = "") nameFilter: String) =
-        customerService.searchCustomers(nameFilter)
+            customerService.searchCustomers(nameFilter)
+
+    @RequestMapping(path = ["/customer/"])
+    fun createCustomer(@RequestBody customerMono: Mono<Customer>) =
+            ResponseEntity(customerService.createCustomer(customerMono), HttpStatus.CREATED)
 }
