@@ -15,13 +15,10 @@ class CustomerController {
 
     @RequestMapping(path = ["/customer/{id}"], method = [RequestMethod.GET])
     fun getCustomer(@PathVariable id: Int): ResponseEntity<Mono<Customer>> {
-        customerService.getCustomer(id).let {
-            return ResponseEntity(it, HttpStatus.OK)
-        }
+        return ResponseEntity(customerService.getCustomer(id), HttpStatus.OK)
     }
 
     @RequestMapping(path = ["/customers"])
-    fun getCustomers(@RequestParam(required = false, defaultValue = "") nameFilter: String): List<Customer> {
-        return customerService.searchCustomers(nameFilter)
-    }
+    fun getCustomers(@RequestParam(required = false, defaultValue = "") nameFilter: String) =
+        customerService.searchCustomers(nameFilter)
 }

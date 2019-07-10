@@ -3,7 +3,9 @@ package kr.h4lo.microservices.chapter4.service
 import kr.h4lo.microservices.chapter4.model.Customer
 import kr.h4lo.microservices.chapter4.model.Telephone
 import org.springframework.stereotype.Component
+import reactor.core.publisher.Flux
 import reactor.core.publisher.Mono
+import reactor.core.publisher.toFlux
 import reactor.core.publisher.toMono
 import java.util.concurrent.ConcurrentHashMap
 
@@ -20,9 +22,9 @@ class CustomerServiceImpl: CustomerService {
         return customers[id]?.toMono()
     }
 
-    override fun searchCustomers(nameFilter: String): List<Customer> {
+    override fun searchCustomers(nameFilter: String): Flux<Customer> {
         return customers.filter {
             it.value.name.contains(nameFilter, true)
-        }.map(Map.Entry<Int, Customer>::value).toList()
+        }.map(Map.Entry<Int, Customer>::value).toFlux()
     }
 }
