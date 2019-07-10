@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.*
+import reactor.core.publisher.Mono
 
 @RestController
 class CustomerController {
@@ -13,8 +14,10 @@ class CustomerController {
     private lateinit var customerService: CustomerService
 
     @RequestMapping(path = ["/customer/{id}"], method = [RequestMethod.GET])
-    fun getCustomer(@PathVariable id: Int): ResponseEntity<Customer> {
-        return ResponseEntity(Customer(id, "customer $id"), HttpStatus.OK)
+    fun getCustomer(@PathVariable id: Int): ResponseEntity<Mono<Customer>> {
+        customerService.getCustomer(id).let {
+            return ResponseEntity(it, HttpStatus.OK)
+        }
     }
 
     @RequestMapping(path = ["/customers"])
