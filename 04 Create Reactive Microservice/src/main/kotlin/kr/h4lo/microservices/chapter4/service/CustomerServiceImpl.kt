@@ -1,5 +1,6 @@
 package kr.h4lo.microservices.chapter4.service
 
+import kr.h4lo.microservices.chapter4.exception.CustomerExistException
 import kr.h4lo.microservices.chapter4.model.Customer
 import kr.h4lo.microservices.chapter4.model.Telephone
 import org.springframework.stereotype.Component
@@ -28,8 +29,12 @@ class CustomerServiceImpl: CustomerService {
     }
 
     override fun createCustomer(customerMono: Mono<Customer>): Mono<Customer> =
-        customerMono.map {
-            customers[it.id] = it
-            it
-        }
+            customerMono.flatMap {
+                if (customers[it.id] == null) {
+                    customers[it.id] = it
+                    it.toMono()
+                } else {
+                    Mono.error(CustomerExistException("Customer ${it.id} already exist"))
+                }
+            }
 }

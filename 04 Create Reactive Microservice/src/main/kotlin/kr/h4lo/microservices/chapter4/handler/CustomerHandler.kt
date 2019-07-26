@@ -1,6 +1,7 @@
 package kr.h4lo.microservices.chapter4.handler
 
 import kr.h4lo.microservices.chapter4.model.Customer
+import kr.h4lo.microservices.chapter4.model.ErrorResponse
 import kr.h4lo.microservices.chapter4.service.CustomerService
 import org.springframework.stereotype.Component
 import org.springframework.web.reactive.function.BodyInserters.fromObject
@@ -22,7 +23,9 @@ class CustomerHandler(val customerService: CustomerService) {
 
     fun create(serverRequest: ServerRequest) =
             customerService.createCustomer(serverRequest.bodyToMono())
-                    .flatMap {
-                        created(URI.create("/functional/customer/${it.id}")).build()
+                    .flatMap { created(URI.create("/functional/customer/${it.id}")).build() }
+                    .onErrorResume(Exception::class.java) {
+                        badRequest().body(fromObject(ErrorResponse("error creating customer",
+                                it.message ?: "error")))
                     }
 }
