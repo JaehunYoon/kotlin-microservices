@@ -1,7 +1,7 @@
-package kr.h4lo.chapter9
+package kr.h4lo.chapter9.service
 
 import kr.h4lo.chapter9.service.CustomerService
-import org.junit.Assert
+import org.amshove.kluent.*
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.springframework.beans.factory.annotation.Autowired
@@ -17,13 +17,16 @@ class CustomerServiceTest {
     @Test
     fun `we should get a customer with a valid id`() {
         val customer = customerService.getCustomer(1)
-        Assert.assertNotNull(customer)
-        Assert.assertEquals(customer?.name, "Kotlin")
+        customer.`should not be null`()
+        customer?.name `should be` "Kotlin"
     }
 
     @Test
     fun `we should get all customers`() {
         val customers = customerService.getAllCustomers()
-        Assert.assertEquals(customers.size, 3)
+        customers.size `should be equal to` 3
+        customers.size `should be greater than` 0
+        customers.size `should be less or equal to` 3
+        customers.size `should be in range` 1..3
     }
 }

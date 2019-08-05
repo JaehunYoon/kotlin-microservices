@@ -2,6 +2,7 @@ package kr.h4lo.chapter9.controller
 
 import kr.h4lo.chapter9.model.Customer
 import kr.h4lo.chapter9.service.CustomerService
+import org.amshove.kluent.*
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.mockito.BDDMockito.given
@@ -52,8 +53,8 @@ class CustomerControllerTest {
 
     @Test
     fun `we should GET a list of customers`() {
-        given(customerService.getAllCustomers())
-                .willReturn(listOf(Customer(1, "test"), Customer(2, "mocks")))
+        When calling customerService.getAllCustomers() `it returns`
+                listOf(Customer(1, "test"), Customer(2, "mocks"))
 
         mockMvc.perform(get("/customers"))
                 .andExpect(status().isOk)
@@ -64,8 +65,8 @@ class CustomerControllerTest {
                 .andExpect(jsonPath("\$[1].name").value("mocks"))
                 .andDo(print())
 
-        then(customerService).should(times(1)).getAllCustomers()
-        then(customerService).shouldHaveNoMoreInteractions()
+        Verify on customerService that customerService.getAllCustomers() was called
+        `Verify no further interactions` on customerService
 
         reset(customerService)
     }
