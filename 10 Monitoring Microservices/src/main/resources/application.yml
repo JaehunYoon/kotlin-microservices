@@ -1,0 +1,11 @@
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health, metrics, trace
+      base-path: /management
+  endpoint:
+    health:
+      show-details: always
+  server:
+    port: 8089
